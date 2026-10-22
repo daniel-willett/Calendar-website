@@ -1,0 +1,31 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        {% if event %}Edit event{% else %}Create event{% endif %}
+    </title>
+</head>
+<body>
+    <h1>
+        {% if event %}Edit event{% else %}Create an event{% endif %}
+    </h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">
+            {% if event %}Save changes{% else %}Create event{% endif %}
+        </button>
+    </form>
+
+    <p>
+        <a href="{% url 'calendar' %}">Back to calendar</a>
+    </p>
+</body>
+</html>
+

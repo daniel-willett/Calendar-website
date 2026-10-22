@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Our Shared Calendar</title>
+</head>
+<body>
+    <header>
+        <h1>Our Shared Calendar</h1>
+
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Log out</button>
+        </form>
+    </header>
+
+    <main>
+	<p><a href="{% url 'event_create' %}">Create an event</a></p>
+        <h2>Upcoming events</h2>
+
+        {% if events %}
+            <ul>
+                {% for event in events %}
+                    <li>
+                        <h3>{{ event.title }}</h3>
+
+                        <p>
+                            {{ event.start_time|date:"D j M Y, H:i" }}
+                            –
+                            {{ event.end_time|date:"H:i" }}
+                        </p>
+
+                        {% if event.description %}
+                            <p>{{ event.description }}</p>
+                        {% endif %}
+
+			<a href="{% url 'event_edit' event.id %}">Edit</a>
+			|
+        		<a href="{% url 'event_delete' event.id %}">Delete</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No events yet. Add one through the admin to get started!</p>
+        {% endif %}
+    </main>
+</body>
+</html>
