@@ -1,49 +1,47 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Our Shared Calendar</title>
+    <title>Our Calendar</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.21/index.global.min.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Our Shared Calendar</h1>
+    <h1>Our Shared Calendar</h1>
 
-        <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button type="submit">Log out</button>
-        </form>
-    </header>
+    <p>
+        <a href="{% url 'event_create' %}">Create an event</a>
+    </p>
 
-    <main>
-	<p><a href="{% url 'event_create' %}">Create an event</a></p>
-        <h2>Upcoming events</h2>
+    <div id="calendar"></div>
 
-        {% if events %}
-            <ul>
-                {% for event in events %}
-                    <li>
-                        <h3>{{ event.title }}</h3>
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Log out</button>
+    </form>
 
-                        <p>
-                            {{ event.start_time|date:"D j M Y, H:i" }}
-                            –
-                            {{ event.end_time|date:"H:i" }}
-                        </p>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const calendarElement = document.getElementById("calendar");
 
-                        {% if event.description %}
-                            <p>{{ event.description }}</p>
-                        {% endif %}
+            const calendar = new FullCalendar.Calendar(calendarElement, {
+                initialView: "dayGridMonth",
+                firstDay: 1,
+                events: "{% url 'calendar_events' %}",
 
-			<a href="{% url 'event_edit' event.id %}">Edit</a>
-			|
-        		<a href="{% url 'event_delete' event.id %}">Delete</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No events yet. Add one through the admin to get started!</p>
-        {% endif %}
-    </main>
+                eventClick: function (info) {
+                    if (info.event.url) {
+                        info.jsEvent.preventDefault();
+                        window.location.href = info.event.url;
+                    }
+                }
+            });
+
+            calendar.render();
+        });
+    </script>
 </body>
 </html>
+

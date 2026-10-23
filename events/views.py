@@ -1,6 +1,7 @@
-from .decorators import approved_user_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 
+from .decorators import approved_user_required
 from .models import Event
 from .forms import EventForm
 
@@ -73,3 +74,19 @@ def event_delete_view(request, event_id):
             {"event":event},
     )
 
+@approved_user_required
+def calendar_events_view(request):
+    events = Event.objects.all()
+
+    event_data = []
+
+    for event in events:
+        event_data.append({
+            "id": event.id,
+            "title": event.title,
+            "start": event.start_time.isoformat(),
+            "end": event.end_time.isoformat(),
+            "url": f"/events/{event.id}/edit/",
+        })
+
+    return JsonResponse(event_data, safe=False)
