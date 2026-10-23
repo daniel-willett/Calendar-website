@@ -10,6 +10,27 @@ class EventForm(forms.ModelForm):
             "start_time",
             "end_time",
         ]
+        widgets = {
+            "start_time": forms.DateTimeInput(
+                attrs={"type": "datetime-local"},
+                format="%Y-%m-%dT%H:%M",
+            ),
+            "end_time": forms.DateTimeInput(
+                attrs={"type": "datetime-local"},
+                format="%Y-%m-%dT%H:%M",
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["start_time"].input_formats = [
+            "%Y-%m-%dT%H:%M",
+        ]
+        self.fields["end_time"].input_formats = [
+            "%Y-%m-%dT%H:%M",
+        ]
+
     def clean(self):
         cleaned_data = super().clean()
 
